@@ -23,30 +23,65 @@ def begin_scaffold(prompt, direction):
             ],
             max_tokens=50,
         )
+
         return response.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
 
 
 def continue_scaffold(prompt, chat_history):
-    messages = chat_history + [
-        {"role": "user", "content": prompt}
-    ]  # Append the latest user message to the history
     try:
+        # Start with the system message
+        messages = [
+            {
+                "role": "system",
+                "content": "You will simulate a 4th grader student in a 1 on 1 vocabulary lesson. This exercise is meant to give teachers practice with scaffolding. After, conclude by giving the user feedback on their use of scaffolding techniques. Offer specific insights on how effectively I employed upward and downward scaffolding strategies and suggest areas for improvement.",
+            }
+        ]
+
+        # Extend the messages list with the entire chat_history
+        messages.extend(chat_history)
+
+        # Append the final user's prompt
+        messages.append({"role": "user", "content": prompt})
+
+        # Make the call to the API with the constructed messages list
         response = client.chat.completions.create(
             model="gpt-4-turbo-preview",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You will simulate 4th grader student in a 1 on 1 vocabular lesson. This excersise is meant to give teachers pracice with scaffolding. After, conclude by giving the user feedback on their use of scaffolding techniques. Offer specific insights on how effectively I employed upward and downward scaffolding strategies and suggest areas for improvement.",
-                },
-                {"role": "user", "content": prompt},
-            ],
+            messages=messages,
             max_tokens=50,
         )
+
+        print(messages) # debugging
+
         return response.choices[0].message.content
     except Exception as e:
         return f"Error: {str(e)}"
+
+
+def assess_scaffolding(messages):
+    # Step 1: Format the conversation
+    formatted_conversation = "Conversation:\n"
+    for message in messages:
+        # Add each message with the role as a prefix
+        formatted_conversation += (
+            f"{message['role'].capitalize()}: {message['content']}\n"
+        )
+
+    # Replace the system message content with the assessment instruction
+    formatted_conversation += "\nAssess this conversation and give feedback to the user/teacher on how well they scaffold and where they can improve."
+
+    try:
+        # Step 2: Make the API call with the formatted conversation
+        response = client.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[{"role": "system", "content": formatted_conversation}],
+            max_tokens=1024,  # Assuming a longer response for detailed assessment
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 
 # Extension questions
@@ -84,8 +119,19 @@ st.markdown(f"Copy Question:  \n**{extension_questions_dict[chosen_vocab]}**")
 if st.button("Restart"):
     st.session_state.messages = []
     st.session_state.used_begin_scaffold = False  # Reset the flag on restart
-    st.experimental_rerun()
+    st.rerun()
 
+if st.button("Finish"):
+    # Call assess_scaffolding with the current conversation
+    assess_scaffolding_response = assess_scaffolding(st.session_state.messages)
+
+    # Here you should extract the response content from the assess_scaffolding_response
+    # and display it or process it as needed. For this example, let's just print it.
+    if assess_scaffolding_response:
+        assessment_content = assess_scaffolding_response  # Simplification: actual extraction depends on API response structure
+        st.session_state.messages.append(
+            {"role": "system", "content": assessment_content}
+        )
 
 # Initialize session state variables if not already present
 if "messages" not in st.session_state:
@@ -115,7 +161,7 @@ if prompt := st.chat_input(extension_questions_dict[chosen_vocab]):
                 # Assuming continue_scaffolding takes the ongoing chat as input
                 response = continue_scaffold(
                     prompt=prompt,
-                    chat_history=continue_scaffold(st.session_state.messages),
+                    chat_history=st.session_state.messages
                 )
 
             st.markdown(response)
