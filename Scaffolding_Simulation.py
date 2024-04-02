@@ -165,11 +165,6 @@ if scaffold_direction == "Random":
     col4,
 ) = st.columns(2)
 
-if col3.button("Restart"):
-    st.session_state.messages = []
-    st.session_state.used_begin_scaffold = False  # Reset the flag on restart
-    st.rerun()
-
 if col3.button("Review", help="Still a work in progress."):
     with st.spinner("Reviewing..."):
         # Call assess_scaffolding with the current conversation
@@ -184,6 +179,12 @@ if col3.button("Review", help="Still a work in progress."):
         st.session_state.messages.append(
             {"role": "system", "content": assessment_content}
         )
+
+if col3.button("Restart"):
+    st.session_state.messages = []
+    st.session_state.used_begin_scaffold = False  # Reset the flag on restart
+    st.rerun()
+
 
 with col4.expander("Scaffolding Hints:"):
     if scaffold_direction == "Upward":
