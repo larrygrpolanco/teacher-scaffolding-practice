@@ -145,7 +145,7 @@ down_scaffold_examples = {
     "Visible": "A fruit that does not have seeds visible on the inside would be a banana or apple?",
 }
 
-st.title("Scaffolding Practice Simulation")
+st.title("Week 5 Scaffolding Practice Simulation")
 
 col1, col2 = st.columns(2)
 # UI for selecting vocabulary word and scaffold direction
