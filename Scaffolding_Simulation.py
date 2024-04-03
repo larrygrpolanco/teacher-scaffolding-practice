@@ -174,20 +174,20 @@ else:
     col4,
 ) = st.columns(2)
 
-# if col3.button("Review", help="Still a work in progress."):
-#     with st.spinner("Reviewing..."):
-#         # Call assess_scaffolding with the current conversation
-#         assess_scaffolding_response = assess_scaffolding(
-#             chat_history=st.session_state.messages, direction=scaffold_direction
-#         )
+if col3.button("Review", help="Still a work in progress."):
+    with st.spinner("Reviewing..."):
+        # Call assess_scaffolding with the current conversation
+        assess_scaffolding_response = assess_scaffolding(
+            chat_history=st.session_state.messages, direction=scaffold_direction
+        )
 
-#     # Here you should extract the response content from the assess_scaffolding_response
-#     # and display it or process it as needed. For this example, let's just print it.
-#     if assess_scaffolding_response:
-#         assessment_content = assess_scaffolding_response  # Simplification: actual extraction depends on API response structure
-#         st.session_state.messages.append(
-#             {"role": "system", "content": assessment_content}
-#         )
+    # Here you should extract the response content from the assess_scaffolding_response
+    # and display it or process it as needed. For this example, let's just print it.
+    if assess_scaffolding_response:
+        assessment_content = assess_scaffolding_response  # Simplification: actual extraction depends on API response structure
+        st.session_state.messages.append(
+            {"role": "system", "content": assessment_content}
+        )
 
 if col3.button("Restart"):
     st.session_state.messages = []
