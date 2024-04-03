@@ -159,8 +159,16 @@ scaffold_direction = col2.selectbox(
 )
 
 if scaffold_direction == "Random":
-    scaffold_direction = random.choice(["Upward", "Downward"])
-
+    # Check if a random choice has already been made
+    if "random_scaffold_direction" not in st.session_state:
+        # If not, make a new random choice and store it in the session state
+        st.session_state.random_scaffold_direction = random.choice(["Upward", "Downward"])
+    # Use the stored random choice
+    scaffold_direction = st.session_state.random_scaffold_direction
+else:
+    # If the user selects a specific direction, clear the random choice from the session state
+    if "random_scaffold_direction" in st.session_state:
+        del st.session_state.random_scaffold_direction
 (
     col3,
     col4,
