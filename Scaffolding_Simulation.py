@@ -22,7 +22,7 @@ def begin_scaffold(prompt, direction):
                     "role": "system",
                     "content": f"In this exercise, you'll simulate a 4th grader in a one-on-one vocabulary lesson, designed to give teachers practice with scaffolding techniques. \
                     {scaffold_direction_instruction} \
-                    Remember, your role is strictly that of the student; wait for the instructor's (user's) response before proceeding with the simulation.",
+                    Remember, your role is strictly that of the student; wait for the instructor's (user's) response before proceeding with the simulation. Keep your answers short.",
                 },
                 {"role": "user", "content": prompt},
             ],
@@ -40,7 +40,7 @@ def continue_scaffold(prompt, chat_history):
         messages = [
             {
                 "role": "system",
-                "content": "You will continue to simulate a 4th grader in a one-on-one vocabulary lesson. This exercise is meant to give teachers practice with scaffolding. \
+                "content": "You will continue to simulate a 4th grader in a one-on-one vocabulary lesson. Keep your answers short at the beginning. This exercise is meant to give teachers practice with scaffolding. \
                 Based on your previous interactions, if you feel the teacher has effectively built upon your understanding, provide a correct answer. \
                 If the explanation or question seems confusing or too complex, indicate misunderstanding or provide an incorrect response. \
                 Remember, your role is strictly that of the student; evaluate the teacher's last message to decide your response.",
